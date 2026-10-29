@@ -1,0 +1,6 @@
+# Exports may contain confidential BOM information. Never commit generated dashboards.
+DOAS_BOM_Dashboard_*.html
+*.csv
+*.tsv
+*.xlsx
+__pycache__/
