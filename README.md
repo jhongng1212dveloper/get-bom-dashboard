@@ -1,50 +1,52 @@
-# DOAS BOM Dashboard — GitHub Pages bookmarklet v0.08
+# DOAS BOM Dashboard — GitHub-hosted bookmarklet
 
-One-click DOM extraction from the DOAS **BOM Import** table into a standalone HTML procurement dashboard.
+**Repository:** https://github.com/jhongng1212dveloper/get-bom-dashboard  
+**Expected GitHub Pages installer:** https://jhongng1212dveloper.github.io/get-bom-dashboard/  
+**Package version:** v0.08.1 — **Dashboard engine:** v0.08 (no functionality changes)
 
-## What changed from v0.07
+## Publish or repair the existing GitHub repository
 
-- Clicking a procurement status stage/legend **filters without jumping**. The explicit **Show the list** button still scrolls to Parts Explorer.
-- Floating **Top** button appears after scrolling down 260 px and smoothly returns to the top.
-- If the BOM table is absent, the bookmarklet finds and clicks the DOAS **BOM Import** button, then waits up to 15 seconds for the table to appear **in the same page**.
-- The original pipeline palette, module 7000 toggle, Parts Explorer status badges, and 400 px status column are preserved.
+1. Open https://github.com/jhongng1212dveloper/get-bom-dashboard .
+2. Use **Add file → Upload files** and upload the contents of this ZIP to the **root** of the `main` branch. You can upload nested folders in a ZIP using the web interface only after extracting the ZIP. Confirm `index.html` and **`bookmarklet.js`** appear alongside `README.md` in the root. Do not upload the ZIP itself as your only file.
+3. In **Settings → Pages → Build and deployment**, choose **Deploy from a branch**, branch `main`, folder `/(root)`, then Save.
+4. Open https://jhongng1212dveloper.github.io/get-bom-dashboard/ . It should display the bookmark installer. Also verify https://jhongng1212dveloper.github.io/get-bom-dashboard/bookmarklet.js returns JavaScript rather than 404.
+5. Show Chrome bookmarks bar (`Ctrl+Shift+B`). Drag **Generate DOAS Dashboard — Hosted** onto it. Or click **Copy hosted bookmark URL**, then create a bookmark and paste it in the URL field.
+6. Open DOAS and click the bookmark. It loads the current `bookmarklet.js` each time, so replacing the script on GitHub updates existing bookmarks without reinstallation.
 
-## Install GitHub Pages (hosted bookmarklet)
+**Offline shortcut:** You can open `index.html` locally and drag the same hosted bookmark; its URL is already preconfigured for this exact repository. It still requires the Pages JavaScript to be published before it can execute on DOAS.
 
-1. Create a GitHub repository, e.g. `doas-bom-dashboard`. **Keep DOAS BOM exports out of the repository**; private BOM data must not be uploaded.
-2. Upload the full contents of this ZIP into the repository root, including `index.html` and `bookmarklet.js`.
-3. GitHub repository → **Settings → Pages → Build and deployment** → Deploy from a branch → `main` / `(root)` → Save.
-4. Open the published URL `https://YOUR-USERNAME.github.io/YOUR-REPO/` using HTTPS.
-5. Drag **Generate DOAS Dashboard — hosted** to your bookmarks bar.
-6. Open DOAS and click the bookmark. It loads the latest `bookmarklet.js` from your published Pages site and extracts the BOM locally.
+## Included files
 
-**CSP compatibility:** Some websites block loading external scripts from GitHub Pages. If DOAS blocks it, use the **standalone** bookmarklet from the same installer; it embeds the full generator and never loads a remote script. Local `index.html` enables only the standalone link.
-
-## Source layout
-
-| Path | Function |
+| File | Purpose |
 |---|---|
-| `index.html` | GitHub Pages installer (and offline standalone installer) |
-| `bookmarklet.js` | Hosted executable JavaScript (also the inline bookmarklet payload) |
-| `src/dashboard_template.html` | Editable standalone dashboard template (no real BOM data) |
-| `src/bookmarklet_source.js` | Extractor source with template placeholder |
-| `src/installer_template.html` | Installer source with bookmark URL placeholders |
-| `tools/build.py` | Rebuild hosted script and installer with Python 3.10+ |
-| `tests/mock_doas.html` | Fictitious BOM Import page for local testing |
+| `index.html` | Drag-to-install GitHub-hosted and standalone bookmarks, preconfigured for this repository |
+| `bookmarklet.js` | Hosted executable code, **required for hosted bookmark** |
+| `bookmark-url.txt` | Compact hosted bookmark URL for manual installation |
+| `bookmarks-import.html` | Alternative Chrome bookmarks HTML import |
+| `src/bookmarklet_source.js` | Editable DOAS extraction script with template placeholder |
+| `src/dashboard_template.html` | Editable dashboard; no company data embedded |
+| `src/installer_template.html` | Editable installer template |
+| `tools/build.py` | Rebuild generated files using Python 3.10+ (`python tools/build.py`) |
+| `tests/mock_doas.html` | Fictitious demo BOM Import page for local testing |
+| `.nojekyll` | GitHub Pages static hosting compatibility |
 
-After source changes, run `python tools/build.py`, commit the updated `bookmarklet.js` and `index.html`, then refresh GitHub Pages. **Hosted bookmarks retrieve updates without reinstalling.** Standalone bookmarks must be replaced for updates.
+## Existing engine v0.08 preserved
 
-## Usage and limitations
+- Detects the loaded DOAS BOM table or clicks the **BOM Import** button and waits for it within the page (full-page navigation requires a second click).
+- Exports all loaded DOM rows, including module 7000 data. Dashboard hides module 7000 by default, with a toggle to include it.
+- Pipeline status click filters **without automatically scrolling**. **Show the list** is the explicit navigation action.
+- Parts Explorer status column is 400 px with original procurement colors. Floating **Go to top** button is retained.
+- Generates a downloadable self-contained dashboard HTML snapshot; does not synchronize with DOAS.
 
-- Click the bookmark on the DOAS site. If the BOM table is not open, the script tries the `BOM Import` button and waits for the loaded table.
-- If DOAS uses full-page navigation, the browser stops the running script when it leaves the page: open the resulting BOM page, then **click the bookmark a second time**.
-- Only rows **currently loaded in the page DOM** are included. Virtual scrolling or server-side pagination can lead to incomplete exports.
-- Module `7000` is **excluded by default** but included in the exported dashboard data so it can be toggled on.
-- The dashboard is a **static snapshot**; it does not write to DOAS or synchronize with it.
-- Downloads may be blocked by browser permissions. Check Chrome's download icon if no file appears.
-- The hosted bookmarklet requests public JavaScript from GitHub Pages; data processing and the file download happen locally on the DOAS page. Don't publish the generated dashboard or paste proprietary BOM data into GitHub.
+## Security / limitations
 
-## Test status
+- The hosted bookmarklet downloads JavaScript from the **public** Pages site and executes it in the active DOAS page. It does not intentionally upload BOM records, but anyone who can modify the hosted code can change its behavior. Review changes before publishing.
+- **Keep company BOM data, generated reports and login credentials out of the public GitHub repository.** Only code and the fictional fixture belong here.
+- DOAS Content Security Policy (CSP) may block injecting remote scripts, even if the GitHub Pages site works. In that case install the **standalone** bookmark from the same installer.
+- The extractor only sees currently loaded DOM rows, not unseen pagination or virtualized records.
+- Chrome may block automatic downloads; allow downloads for your DOAS site if necessary.
+- Neither live DOAS behavior nor the published Pages site is validated by the local tests.
 
-- JavaScript syntax and local Chromium checks are performed at release build.
-- Real DOAS page, navigation behavior and GitHub Pages deployment are **not tested** against your account.
+## Updating later
+
+Modify `src/` files, run `python tools/build.py`, and publish the updated `bookmarklet.js` and `index.html` to GitHub. **Hosted bookmarks do not need reinstalling.** Standalone bookmarks must be replaced after a functional update.
