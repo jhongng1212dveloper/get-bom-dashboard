@@ -1,12 +1,17 @@
 # DOAS Get BOM Dashboard — GitHub-hosted bookmarklet
 
-**Release:** v0.20 (18 Nov 2026)  
+**Release:** v0.21 (18 Nov 2026)  
 **GitHub repository:** https://github.com/jhongng1212dveloper/get-bom-dashboard  
 **GitHub Pages installer (after publication):** https://jhongng1212dveloper.github.io/get-bom-dashboard/
 
 A browser bookmarklet reads BOM records already loaded in the DOAS webpage and creates a self-contained, offline HTML procurement dashboard. Module 7000 is excluded **by default** but remains available through the dashboard toggle.
 
-## Release changes — v0.20
+## Release changes — v0.21
+
+- **MOBILE-STATUS-01:** On narrow screens (≤1100 CSS px), show a compact procurement-status color dot *before every Manufacturer Part No.* in Parts Explorer. Uses the identical status palette as the existing rightmost status badge; a merged item with multiple statuses displays one dot per distinct status. Original status text/badges remain on the right for detailed inspection, with desktop layout unchanged. Includes accessible status labels for assistive technology. No change to status classification or merge/export data.
+- Added focused `tests/test_mobile_status_preview.py` covering narrow/desktop widths, raw/merged rows, status mapping and accessible labels. iOS Safari field acceptance remains pending.
+
+## Previous release changes — v0.20
 
 - **PR progress metric:** Shows pending PR percentage and PR raised percentage below the original procurement pipeline, calculated from BOM-line statuses in the current module-7000 scope. Approved and PO issued are classified as PR raised; all remaining statuses are counted as pending/not-yet-raised, including cancelled or denied statuses (deliberate two-class rule; this does not assert those entries need a new PR). The two percentages always total 100% for non-empty data. Module/manufacturer/status filters do not change the project-wide pipeline counts, consistent with the existing dashboard.
 - **MOBILE-MODULES-01:** At ≤760 CSS px, the Modules table uses a responsive stacked row: module, line count and STD/FAB followed by status mix, manufacturers and PO-issued %. Prevents fixed-width columns from overflowing the Modules card and overlapping the page. Desktop Modules table, source data and click-to-filter behavior are unchanged.
@@ -69,7 +74,7 @@ The source currently **does not contain a CSV export/merge path**; the new bound
 - Selecting module, brand, or procurement status **combines filters** without clearing the other two; original module/manufacturer summary clicks are synchronized too.
 - The approved upper dashboard layout and the eleven original procurement-status colors are unchanged.
 
-**Hosted-bookmark compatibility:** The reserved preview tab key is intentionally left at `__DOAS_BOM_PREVIEW_V012__` so already-installed v0.12 hosted bookmarks remain compatible when GitHub serves v0.19. The loader script URL remains unchanged.
+**Hosted-bookmark compatibility:** The reserved preview tab key is intentionally left at `__DOAS_BOM_PREVIEW_V012__` so already-installed v0.12 hosted bookmarks remain compatible when GitHub serves v0.21. The loader script URL remains unchanged.
 
 ### Previous v0.12 features (preserved)
 
@@ -90,7 +95,7 @@ Existing functions preserved: BOM Import navigation (extended with Clear filters
 
 ## Deploy to GitHub
 
-1. Extract `DOAS_BOM_GitHub_Repository_v0.19.zip` to a local folder.
+1. Extract `DOAS_BOM_GitHub_Repository_v0.21.zip` to a local folder.
 2. Open the existing repository: https://github.com/jhongng1212dveloper/get-bom-dashboard .
 3. Select **Add file → Upload files**. Upload the extracted **files and directories** to the `main` branch's root (do not upload only the ZIP). Replace older files, particularly `bookmarklet.js` and `index.html`.
 4. Confirm `index.html`, `bookmarklet.js`, `.nojekyll`, and `.gitignore` are at the repository root.
@@ -100,12 +105,12 @@ Existing functions preserved: BOM Import navigation (extended with Clear filters
    - https://jhongng1212dveloper.github.io/get-bom-dashboard/bookmarklet.js
 7. Open the Pages installer. Drag **Generate DOAS Dashboard — Hosted** to Chrome's bookmarks bar. Existing hosted bookmarks keep working after updating `bookmarklet.js` and do not need replacement.
 
-You can also open the downloaded `DOAS_BOM_GitHub_Hosted_Installer_v0.19.html` locally and install the hosted bookmark. It still loads the published GitHub Pages JavaScript at run time. The same installer offers a **standalone fallback** bookmark that contains the whole generator but needs replacing when code changes.
+You can also open the downloaded `DOAS_BOM_GitHub_Hosted_Installer_v0.21.html` locally and install the hosted bookmark. It still loads the published GitHub Pages JavaScript at run time. The same installer offers a **standalone fallback** bookmark that contains the whole generator but needs replacing when code changes.
 
 ## Everyday usage
 
 1. Open DOAS. Click the hosted bookmark. If the BOM table is not present but **BOM Import** is available, the script opens it and waits for records (a full page reload may require clicking the bookmark again). Before extracting, it clicks **Clear filters** on the DOAS page even when the BOM table is already visible, and waits for its loaded DOM to settle. If Clear filters is missing or the single-module table does not visibly change, it stops with a warning rather than claiming a complete BOM.
-2. After requesting the filter reset, the bookmark extracts only currently loaded rows, requests a downloaded `DOAS_BOM_Dashboard_..._v0.19.html` file, and attempts to open the same generated HTML in a new browser tab.
+2. After requesting the filter reset, the bookmark extracts only currently loaded rows, requests a downloaded `DOAS_BOM_Dashboard_..._v0.21.html` file, and attempts to open the same generated HTML in a new browser tab.
 3. Chrome may suppress automatic download or pop-ups due to its security settings. If automatic opening is blocked, click **Open dashboard** in the floating result panel on the DOAS page; **Download again** is also available. The persistent downloaded `.html` file can be opened independently.
 4. Use the compact status controls while reviewing the Modules and Parts Explorer. Filter by status first, then optionally by module/manufacturer. Default merge is OFF; module 7000 is excluded by default.
 
@@ -132,9 +137,9 @@ You can also open the downloaded `DOAS_BOM_GitHub_Hosted_Installer_v0.19.html` l
 
 For a new revision: edit `src/`, then run `python tools/build.py`. Upload regenerated `bookmarklet.js`, `index.html`, and relevant source changes to the repository. The hosted bookmark loads the updated file on the next click (a cache-busting query is added).
 
-Browser tests (Python, Playwright and Chromium required): `python tests/test_release.py`, `python tests/test_module_pane.py`, `python tests/test_supplier_sort.py`, `python tests/test_module_merge_brand_pane.py`, `python tests/test_compact_density.py`, and `python tests/test_clear_filters.py` (v0.15 BOM Import / Clear filters contract), `python tests/test_sticky_project.py` (v0.17 project + line label), and `python tests/test_persistent_panes.py` (v0.18 always-visible panes), and `python tests/test_sticky_filter_resets.py` (v0.19 pinned reset controls). The fictional fixtures assert: all 11 original pipeline/status colors; 5-column Parts Explorer; readable supplier PNs; merge default/off/on; sticky status filter; viewport stability; module 7000 toggle; 700–1536px responsive handling; hosted popup/download; popup-block fallback; standalone bookmark; and BOM Import navigation.
+Browser tests (Python, Playwright and Chromium required): `python tests/test_release.py`, `python tests/test_module_pane.py`, `python tests/test_supplier_sort.py`, `python tests/test_module_merge_brand_pane.py`, `python tests/test_compact_density.py`, and `python tests/test_clear_filters.py` (v0.15 BOM Import / Clear filters contract), `python tests/test_sticky_project.py` (v0.17 project + line label), and `python tests/test_persistent_panes.py` (v0.18 always-visible panes), and `python tests/test_sticky_filter_resets.py` (v0.19 pinned reset controls), `python tests/test_pr_mobile_modules.py` (v0.20 PR/mobile modules), and `python tests/test_mobile_status_preview.py` (v0.21 first-column status colors). The fictional fixtures assert: all 11 original pipeline/status colors; 5-column Parts Explorer; readable supplier PNs; merge default/off/on; sticky status filter; viewport stability; module 7000 toggle; 700–1536px responsive handling; hosted popup/download; popup-block fallback; standalone bookmark; and BOM Import navigation.
 
-**Tested locally:** Chromium browser simulation using fictitious BOM data, including asynchronous Clear filters updates. **Pending:** Testing on the live DOAS application and confirming the real GitHub Pages deployment serves v0.19.
+**Tested locally:** Chromium browser simulation using fictitious BOM data, including asynchronous Clear filters updates. **Pending:** Testing on the live DOAS application and confirming the real GitHub Pages deployment serves v0.21.
 
 ## Security
 
@@ -147,6 +152,6 @@ Browser tests (Python, Playwright and Chromium required): `python tests/test_rel
 
 - Local simulated Chromium tests: rerun on each source change.
 - Live DOAS data extraction/completeness: **PENDING**.
-- Real GitHub Pages deployment of v0.19 and installed hosted bookmark: **PENDING**.
+- Real GitHub Pages deployment of v0.21 and installed hosted bookmark: **PENDING**.
 - Company policy for externally hosted JavaScript: **PENDING**.
 - No real BOM, CSV, or customer export is included in the repository.
