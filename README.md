@@ -1,12 +1,19 @@
 # DOAS Get BOM Dashboard — GitHub-hosted bookmarklet
 
-**Release:** v0.19 (13 Nov 2026)  
+**Release:** v0.20 (18 Nov 2026)  
 **GitHub repository:** https://github.com/jhongng1212dveloper/get-bom-dashboard  
 **GitHub Pages installer (after publication):** https://jhongng1212dveloper.github.io/get-bom-dashboard/
 
 A browser bookmarklet reads BOM records already loaded in the DOAS webpage and creates a self-contained, offline HTML procurement dashboard. Module 7000 is excluded **by default** but remains available through the dashboard toggle.
 
-## Release changes — v0.19
+## Release changes — v0.20
+
+- **PR progress metric:** Shows pending PR percentage and PR raised percentage below the original procurement pipeline, calculated from BOM-line statuses in the current module-7000 scope. Approved and PO issued are classified as PR raised; all remaining statuses are counted as pending/not-yet-raised, including cancelled or denied statuses (deliberate two-class rule; this does not assert those entries need a new PR). The two percentages always total 100% for non-empty data. Module/manufacturer/status filters do not change the project-wide pipeline counts, consistent with the existing dashboard.
+- **MOBILE-MODULES-01:** At ≤760 CSS px, the Modules table uses a responsive stacked row: module, line count and STD/FAB followed by status mix, manufacturers and PO-issued %. Prevents fixed-width columns from overflowing the Modules card and overlapping the page. Desktop Modules table, source data and click-to-filter behavior are unchanged.
+- Narrow screens also let original procurement bar segments shrink to fit their container; legend remains the accessible status-label source.
+- Added `tests/test_pr_mobile_modules.py` for calculations, module-7000 toggle, cell bounds, absence of horizontal page overflow and responsive widths (360–1536 px). Actual iOS Safari visual and touch acceptance are pending.
+
+## Previous release changes — v0.19
 
 - Keep both existing `All modules` (`data-pane-mod=""`) and `All manufacturers` (`data-pane-brand=""`) controls pinned at the top of their respective scrollable panes. They remain visible even at the bottom of the list, including when a search produces no matches.
 - Add always-accessible **All modules** (`#stickyModuleClear`) and **All manufacturers** (`#stickyBrandClear`) to the sticky procurement bar beside status **Clear** (`#stickyClear`). Their counts reflect the current combination of other filters and they activate only when that filter is set.
